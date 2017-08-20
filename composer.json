@@ -1,0 +1,18 @@
+{
+    "name": "awd-studio/smsc",
+    "description": "An API for sending short messages with the https://smsc.ua / https://smsc.ru / https://smsc.kz / https://smsc.tj / https://smscentre.com services.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anton Karpov",
+            "email": "awd.com.ua@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Smsc\\": "src/Smsc"
+        }
+    },
+    "require": {}
+}
