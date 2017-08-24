@@ -4,7 +4,7 @@
 
 An API for sending short messages with the SMSC services.
 
-Supported getaways:
+Supported gateways:
 
 - https://smsc.ua 
 - https://smsc.ru 

@@ -67,7 +67,7 @@ abstract class SmscService
      *
      * @return array
      */
-    public function getOptions(): array
+    public function getOptions()
     {
         return $this->options;
     }
@@ -123,7 +123,7 @@ abstract class SmscService
      *
      * @return string
      */
-    public function getApiMethod(): string
+    public function getApiMethod()
     {
         return $this->apiMethod;
     }
@@ -133,7 +133,7 @@ abstract class SmscService
      *
      * @return string
      */
-    public function getApiUrl(): string
+    public function getApiUrl()
     {
         return $this->settings->getApiUrl($this->getApiMethod());
     }
@@ -145,6 +145,6 @@ abstract class SmscService
      *
      * @return Response
      */
-    abstract public function send(RequestInterface $driver = null): Response;
+    abstract public function send(RequestInterface $driver = null);
 
 }

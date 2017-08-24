@@ -43,7 +43,7 @@ class SmscBalance extends SmscService
      *
      * @return Response
      */
-    public function send(RequestInterface $driver = null): Response
+    public function send(RequestInterface $driver = null)
     {
         $this->setApiMethod('balance');
 

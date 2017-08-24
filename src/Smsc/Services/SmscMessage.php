@@ -76,7 +76,7 @@ class SmscMessage extends SmscService
      *
      * @return string
      */
-    public function getPhones(): string
+    public function getPhones()
     {
         return $this->phones;
     }
@@ -98,7 +98,7 @@ class SmscMessage extends SmscService
      *
      * @return string
      */
-    public function getMessage(): string
+    public function getMessage()
     {
         return $this->message;
     }
@@ -120,7 +120,7 @@ class SmscMessage extends SmscService
      *
      * @return array
      */
-    public function getOptions(): array
+    public function getOptions()
     {
         return $this->options;
     }
@@ -156,7 +156,7 @@ class SmscMessage extends SmscService
      *
      * @return Response
      */
-    public function send(RequestInterface $driver = null): Response
+    public function send(RequestInterface $driver = null)
     {
         $this->setApiMethod('send');
 

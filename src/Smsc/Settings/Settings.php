@@ -91,7 +91,7 @@ final class Settings
     /**
      * @return string
      */
-    public function getLogin(): string
+    public function getLogin()
     {
         return $this->login;
     }
@@ -107,7 +107,7 @@ final class Settings
     /**
      * @return string
      */
-    public function getPsw(): string
+    public function getPsw()
     {
         return $this->psw;
     }
@@ -123,7 +123,7 @@ final class Settings
     /**
      * @return string
      */
-    public function getHost(): string
+    public function getHost()
     {
         return $this->host;
     }
@@ -198,7 +198,7 @@ final class Settings
      *
      * @return array
      */
-    private static function getConstants(string $needle): array
+    private static function getConstants(string $needle)
     {
         $reflection   = new \ReflectionClass(__CLASS__);
         $allConstants = $reflection->getConstants();

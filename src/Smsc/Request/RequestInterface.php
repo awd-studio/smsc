@@ -28,6 +28,6 @@ interface RequestInterface
      * @return string
      * @throws \Exception
      */
-    public function execute(SmscService $service): string;
+    public function execute(SmscService $service);
 
 }

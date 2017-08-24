@@ -108,7 +108,7 @@ class Response
     /**
      * @return bool
      */
-    public function hasError(): bool
+    public function hasError()
     {
         return $this->hasError;
     }
@@ -116,7 +116,7 @@ class Response
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getMessage()
     {
         return $this->message;
     }
@@ -132,7 +132,7 @@ class Response
     /**
      * @return string
      */
-    public function getErrorOriginMessage(): string
+    public function getErrorOriginMessage()
     {
         return $this->errorOriginMessage;
     }
@@ -140,7 +140,7 @@ class Response
     /**
      * @return int
      */
-    public function getErrorOriginCode(): int
+    public function getErrorOriginCode()
     {
         return $this->errorOriginCode;
     }
@@ -156,7 +156,7 @@ class Response
     /**
      * @return string
      */
-    public function getOrigin(): string
+    public function getOrigin()
     {
         return $this->origin;
     }
