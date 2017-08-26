@@ -80,7 +80,7 @@ final class Settings
      * @param string $host
      * @param string $sender
      */
-    public function __construct($login, $psw, $host = self::SMSC_HOST_UA, $sender = null)
+    public function __construct($login, $psw, $host = self::SMSC_HOST_UA, $sender = '')
     {
         $this->setLogin($login);
         $this->setPsw($psw);
