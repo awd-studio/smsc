@@ -23,7 +23,7 @@ use Smsc\Request\SmscCurlRequest;
  *
  * @package Smsc\Message
  */
-class SmscMessage extends SmscService
+class SmscMessage extends AbstractSmscService
 {
 
     /**

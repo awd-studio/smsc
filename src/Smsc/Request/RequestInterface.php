@@ -9,7 +9,7 @@
 namespace Smsc\Request;
 
 
-use Smsc\Services\SmscService;
+use Smsc\Services\AbstractSmscService;
 
 
 /**
@@ -23,11 +23,11 @@ interface RequestInterface
     /**
      * Execute request.
      *
-     * @param SmscService $service
+     * @param AbstractSmscService $service
      *
      * @return string
      * @throws \Exception
      */
-    public function execute(SmscService $service);
+    public function execute(AbstractSmscService $service);
 
 }

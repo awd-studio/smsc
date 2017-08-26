@@ -13,7 +13,7 @@
 namespace Smsc\Request;
 
 
-use Smsc\Services\SmscService;
+use Smsc\Services\AbstractSmscService;
 
 
 /**
@@ -30,12 +30,12 @@ class SmscCurlRequest implements RequestInterface
     /**
      * Execute request.
      *
-     * @param SmscService $service
+     * @param AbstractSmscService $service
      *
      * @return string
      * @throws \Exception
      */
-    public function execute(SmscService $service)
+    public function execute(AbstractSmscService $service)
     {
         if (function_exists('curl_init')) {
 

@@ -22,7 +22,7 @@ use Smsc\Response\Response;
  *
  * @package Smsc\Message
  */
-class SmscBalance extends SmscService
+class SmscBalance extends AbstractSmscService
 {
 
     /**
