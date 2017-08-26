@@ -21,7 +21,7 @@ use Smsc\Services\AbstractSmscService;
  *
  * @package Smsc\CurlMessage
  */
-class SmscCurlRequest implements RequestInterface
+class CurlRequest implements RequestInterface
 {
 
     const CONNECTTIMEOUT = 5;

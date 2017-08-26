@@ -159,6 +159,23 @@ final class Settings
     }
 
     /**
+     * Validate API methods.
+     *
+     * @param string $method
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function validApiMethod(string $method)
+    {
+        if (in_array($method, $this->getApiMethods())) {
+            return true;
+        } else {
+            throw new \Exception("Method \"$method\" not supported!");
+        }
+    }
+
+    /**
      * Get API URL
      *
      * @param string $method
@@ -168,10 +185,8 @@ final class Settings
      */
     public function getApiUrl(string $method)
     {
-        if (in_array($method, $this->getApiMethods())) {
+        if ($this->validApiMethod($method)) {
             return 'https://' . $this->getHost() . "/sys/$method.php";
-        } else {
-            throw new \Exception("Method \"$method\" not supported!");
         }
     }
 

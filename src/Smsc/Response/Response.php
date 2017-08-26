@@ -25,128 +25,104 @@ class Response
      *
      * @var string
      */
-    protected $origin;
+    protected $rawResponse;
 
     /**
-     * Response object.
+     * Decoded response.
      *
-     * @var array | mixed
+     * @var array|object
      */
     protected $response;
 
     /**
-     * @var bool
-     */
-    protected $hasError;
-
-    /**
+     * Status code.
+     * If "0" - operation success. Else - failed.
+     *
      * @var int
      */
-    protected $errorOriginCode;
+    protected $statusCode;
 
     /**
-     * @var string
-     */
-    protected $errorOriginMessage;
-
-    /**
-     * Message
+     * Status message.
+     * If success = "success", else - message from response.
      *
      * @var string
      */
-    protected $message;
+    protected $statusMessage;
+
+    /**
+     * Status code message.
+     * Error message. Empty if success operation.
+     *
+     * @var string
+     */
+    protected $statusCodeMessage;
+
+    /**
+     * API method
+     *
+     * @var string
+     */
+    protected $apiMethod;
+
 
     /**
      * Response constructor.
      *
      * @param string $json
-     * @param string $method
+     * @param string $apiMethod
      */
-    public function __construct($json, $method = 'send')
+    public function __construct($json, $apiMethod = 'send')
     {
-        $this->origin   = $json;
-        $this->response = json_decode($json);
+        $this->rawResponse = $json;
+        $this->apiMethod   = $apiMethod;
+        $this->response    = json_decode($json);
 
-        if (isset($this->response->error) || isset($this->response->error_code)) {
+        $this->statusCode        = $this->hasError() ? $this->response->error_code : 0;
+        $this->statusMessage     = $this->hasError() ? $this->response->error : 'Success';
+        $this->statusCodeMessage = $this->hasError() ? $this->getErrorMessage() : '';
+    }
 
-            $this->hasError           = (bool) $this->response->error_code;
-            $this->errorOriginCode    = $this->response->error_code;
-            $this->errorOriginMessage = $this->response->error;
-            $this->message            = $this->getErrorMessage($method, $this->response->error_code);
-
-        } else {
-
-            $this->message  = 'Success';
-            $this->hasError = false;
-
-        }
+    /**
+     * Check if operation has error.
+     *
+     * @return bool
+     */
+    public function hasError()
+    {
+        return (bool) $this->response->error_code;
     }
 
     /**
      * Error message.
      *
-     * @param $method    string
-     * @param $errorCode string
-     *
      * @return string
      *
      */
-    private function getErrorMessage($method, $errorCode)
+    private function getErrorMessage()
     {
         $responseCodes = self::responseErrorCodes();
 
-        if (isset($responseCodes[$method][$errorCode])) {
-            $message = $responseCodes[$method][$errorCode];
+        if (isset($responseCodes[$this->apiMethod][$this->statusCode])) {
+            $message = $responseCodes[$this->apiMethod][$this->statusCode];
         } else {
-            $message = "Unknown error: \"$method\":\"$errorCode\". ";
-            $message .= "See full response: {$this->getOrigin()}";
+            $message = "Unknown error: \"$this->apiMethod\":\"$this->statusCode\". ";
+            $message .= "See full response: {$this->getRawResponse()}";
         }
 
         return $message;
     }
 
     /**
-     * @return bool
-     */
-    public function hasError()
-    {
-        return $this->hasError;
-    }
-
-    /**
      * @return string
      */
-    public function getMessage()
+    public function getRawResponse()
     {
-        return $this->message;
+        return $this->rawResponse;
     }
 
     /**
-     * @param bool $message
-     */
-    public function setMessage(bool $message)
-    {
-        $this->message = $message;
-    }
-
-    /**
-     * @return string
-     */
-    public function getErrorOriginMessage()
-    {
-        return $this->errorOriginMessage;
-    }
-
-    /**
-     * @return int
-     */
-    public function getErrorOriginCode()
-    {
-        return $this->errorOriginCode;
-    }
-
-    /**
-     * @return array|mixed
+     * @return array
      */
     public function getResponse()
     {
@@ -154,11 +130,35 @@ class Response
     }
 
     /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->statusCode;
+    }
+
+    /**
      * @return string
      */
-    public function getOrigin()
+    public function getStatusMessage()
     {
-        return $this->origin;
+        return $this->statusMessage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusCodeMessage()
+    {
+        return $this->statusCodeMessage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiMethod()
+    {
+        return $this->apiMethod;
     }
 
 
@@ -168,7 +168,7 @@ class Response
     private static function responseErrorCodes()
     {
         return [
-            'send' => [
+            'send'           => [
                 1 => 'Ошибка в параметрах',
                 2 => 'Неверный логин или пароль',
                 3 => 'Недостаточно средств на счете Клиента',
@@ -178,6 +178,94 @@ class Response
                 7 => 'Неверный формат номера телефона',
                 8 => 'Сообщение на указанный номер не может быть доставлено',
                 9 => 'Отправка более одного одинакового запроса на передачу SMS-сообщения либо более пяти одинаковых запросов на получение стоимости сообщения в течение минуты',
+            ],
+            'templates'      => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                3 => 'Запись не найдена',
+                4 => 'IP-адрес временно заблокирован',
+                5 => 'Ошибка сохранения или удаления',
+                9 => 'Попытка отправки более трех одинаковых запросов на действия с шаблонами',
+            ],
+            'jobs'           => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                3 => 'Ошибка сохранения записи',
+                4 => 'IP-адрес временно заблокирован из-за частых ошибок в запросах',
+                5 => 'Неверный формат даты',
+                9 => 'Отправка более одного одинакового запроса на действия с рассылками в течение минуты',
+            ],
+            'status'         => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                4 => 'IP-адрес временно заблокирован',
+                5 => 'Ошибка удаления сообщения',
+                9 => 'Попытка отправки более пяти запросов на получение статуса одного и того же сообщения в течение минуты',
+            ],
+            'balance'        => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                4 => 'IP-адрес временно заблокирован',
+                9 => 'Попытка отправки более десяти запросов на получение баланса в течение минуты',
+            ],
+            'phones'         => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                3 => 'Записи не найдены',
+                4 => 'IP-адрес временно заблокирован',
+                5 => 'Ошибка выполнения операции',
+                9 => 'Попытка отправки более трех одинаковых запросов на операции с группами, контактами или записями "черного" списка в течение минуты',
+            ],
+            'users'          => [
+                1  => 'Ошибка в параметрах',
+                2  => 'Неверный логин или пароль',
+                3  => 'Записи не найдены',
+                4  => 'IP-адрес временно заблокирован',
+                5  => 'Ошибка выполнения операции',
+                6  => 'Субклиент с указанным логином не существует',
+                7  => 'Указан сублогин имеющий общий баланс с главным аккаунтом',
+                8  => 'Ошибка при сохранении записи',
+                9  => 'Попытка отправки более трех запросов на добавление субклиентов или изменение одного и того же субклиента в течение минуты',
+                10 => 'Недостаточно средств для зачисления',
+            ],
+            'senders'        => [
+                1  => 'Ошибка в параметрах',
+                2  => 'Неверный логин или пароль',
+                3  => 'Имя отправителя не найдено',
+                4  => 'IP-адрес временно заблокирован',
+                5  => 'Ошибка сохранения или удаления имени отправителя',
+                7  => 'Неверный формат номера',
+                8  => 'Код подтверждения на указанный номер не может быть доставлен',
+                9  => 'Попытка отправки более трех одинаковых запросов на получение списка доступных имен отправителей или пяти запросов на создание нового имени отправителя в течение минуты',
+                10 => 'Код уже был отправлен на указанный номер. Повторная попытка возможна через 8 часов',
+                11 => 'Неверный код подтверждения',
+            ],
+            'get'            => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                3 => 'Сообщение не найдено | Лицевые счета не найдены | Оператор не найден',
+                4 => 'IP-адрес временно заблокирован',
+                9 => 'Попытка отправки более трех одинаковых запросов на получение истории исходящих сообщений в течение минуты',
+            ],
+            'info'           => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                3 => 'Оператор не найден',
+                4 => 'IP-адрес временно заблокирован',
+                9 => 'Попытка отправки более трех одинаковых запросов или любых 100 запросов на получение информации об операторе абонента в течение минуты',
+            ],
+            'get_mnp'        => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                4 => 'IP-адрес временно заблокирован',
+                9 => 'Попытка отправки более трех одинаковых запросов на выгрузку базы портированных номеров в течение минуты',
+            ],
+            'receive_phones' => [
+                1 => 'Ошибка в параметрах',
+                2 => 'Неверный логин или пароль',
+                3 => 'Недостаточно средств на счете для аренды номера',
+                4 => 'IP-адрес временно заблокирован',
+                9 => 'Попытка отправки более двух одинаковых запросов на получение списка доступных для аренды номеров или подключение номера, либо изменение свойств выделенного номера в течение минуты',
             ],
         ];
     }

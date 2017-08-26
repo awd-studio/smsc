@@ -22,7 +22,7 @@ use Smsc\Response\Response;
  *
  * @package Smsc\Message
  */
-class SmscBalance extends AbstractSmscService
+class SmscSenders extends AbstractSmscService
 {
 
     /**
@@ -31,10 +31,9 @@ class SmscBalance extends AbstractSmscService
     public function getParams()
     {
         return parent::getParams() + [
-                'cur' => true,
+                'get' => true,
             ];
     }
-
 
     /**
      * Check balance.
@@ -45,7 +44,7 @@ class SmscBalance extends AbstractSmscService
      */
     public function send(RequestInterface $driver = null)
     {
-        $this->setApiMethod('balance');
+        $this->setApiMethod('senders');
 
         if (!isset($driver)) {
             $driver = new CurlRequest;

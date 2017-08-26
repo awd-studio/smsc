@@ -15,7 +15,7 @@ namespace Smsc\Services;
 use Smsc\Request\RequestInterface;
 use Smsc\Response\Response;
 use Smsc\Settings\Settings;
-use Smsc\Request\SmscCurlRequest;
+use Smsc\Request\CurlRequest;
 
 
 /**
@@ -161,7 +161,7 @@ class SmscMessage extends AbstractSmscService
         $this->setApiMethod('send');
 
         if (!isset($driver)) {
-            $driver = new SmscCurlRequest;
+            $driver = new CurlRequest;
         }
 
         $response = $driver->execute($this);
