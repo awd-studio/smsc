@@ -24,7 +24,7 @@ composer require awd-studio/smsc
 
 ## How to use:
 
-### Send message
+### Send messages
 ```php
 <?php
 
@@ -40,7 +40,7 @@ $options = [
 ];
 $sms = new SmscMessage($settings, $phones, $message, $options);
 
-// Send message
+// Send SMS
 $sms->send();
 
 // Get response data
@@ -86,3 +86,54 @@ $senders->send();
 // Manage Sender IDs
 $arr = $smsc->results();
 ```
+
+### More examples
+```php
+<?php
+
+use \Smsc\Settings;
+use \Smsc\SmscMessage;
+
+// Create new settings item
+$settings = new Settings($MY_LOGIN, $MY_PASSWORD);
+$sms = new SmscMessage($settings, $phones, $message, $options);
+
+// Send MMS
+$sms->mms($theme = 'My message theme');
+$sms->send();
+
+// Send E-mail
+$sms->email($theme = 'My message theme');
+$sms->send();
+
+// Send Viber
+$sms->viber();
+$sms->send();
+
+// Send HLR
+$sms->hlr();
+$sms->send();
+
+// Send Flash-SMS
+$sms->flash();
+$sms->send();
+
+// Send Ping-SMS
+$sms->ping();
+$sms->send();
+
+// Voice message
+$sms->call('w3'); // Voice call with women alternative voice #2.
+$sms->send();
+
+// Set additional options
+$options = [
+    'id'      => 123,        // Set SMS ID
+    'time'    => $timestamp, // Set SMS sending time
+    'valid'   => 10,         // Set SMS live time for 100 hours
+    'tinyurl' => true,       // Automate short URL's
+];
+$sms = new SmscMessage($settings, $phones, $message, $options);
+$sms->send();
+```
+*More information [here](https://smsc.ua/api/http/send/sms).*

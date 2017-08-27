@@ -56,6 +56,94 @@ class SmscMessage extends AbstractSmscService
         $this->message = $message;
     }
 
+    /**
+     * MMS message.
+     *
+     * @param string $subj
+     */
+    public function mms(string $subj = '')
+    {
+        $this->addParams(['mms' => true]);
+
+        if (!empty($subj)) {
+            $this->addParams(['subj' => $subj]);
+        }
+    }
+
+    /**
+     * E-mail message.
+     *
+     * @param string $subj
+     */
+    public function email(string $subj = '')
+    {
+        $this->addParams(['mail' => true]);
+
+        if (!empty($subj)) {
+            $this->addParams(['subj' => $subj]);
+        }
+    }
+
+    /**
+     * HLR message.
+     */
+    public function hlr()
+    {
+        $this->addParams(['hlr' => true]);
+    }
+
+    /**
+     * Flash SMS.
+     */
+    public function flash()
+    {
+        $this->addParams(['flash' => true]);
+    }
+
+    /**
+     * Push SMS.
+     */
+    public function push()
+    {
+        $this->addParams(['push' => true]);
+    }
+
+    /**
+     * Ping SMS.
+     */
+    public function ping()
+    {
+        $this->addParams(['ping' => true]);
+    }
+
+    /**
+     * Viber message.
+     */
+    public function viber()
+    {
+        $this->addParams(['viber' => true]);
+    }
+
+    /**
+     * Call message.
+     *
+     * m  – мужской голос (по умолчанию).
+     * m2 – мужской альтернативный голос.
+     * w  – женский голос.
+     * w2 – женский альтернативный голос 1.
+     * w3 – женский альтернативный голос 2.
+     * w4 – женский альтернативный голос 3.
+     *
+     * @param string $voice
+     */
+    public function call(string $voice = 'm')
+    {
+        $this->addParams([
+            'call'  => true,
+            'voice' => $voice,
+        ]);
+    }
+
 
     /**
      * Set current API method.
