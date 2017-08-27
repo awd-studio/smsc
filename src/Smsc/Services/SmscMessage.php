@@ -12,10 +12,7 @@
 namespace Smsc\Services;
 
 
-use Smsc\Request\RequestInterface;
-use Smsc\Response\Response;
 use Smsc\Settings\Settings;
-use Smsc\Request\CurlRequest;
 
 
 /**
@@ -57,6 +54,15 @@ class SmscMessage extends AbstractSmscService
 
         $this->phones  = $phones;
         $this->message = $message;
+    }
+
+
+    /**
+     * Set current API method.
+     */
+    public function setApiMethod()
+    {
+        $this->apiMethod = 'send';
     }
 
 
@@ -150,22 +156,12 @@ class SmscMessage extends AbstractSmscService
 
 
     /**
-     * Send SMS.
+     * Processing response.
      *
-     * @param RequestInterface|null $driver RequestInterface class name.
-     *
-     * @return Response
+     * @return mixed
      */
-    public function send(RequestInterface $driver = null)
+    public function results()
     {
-        $this->setApiMethod('send');
-
-        if (!isset($driver)) {
-            $driver = new CurlRequest;
-        }
-
-        $response = $driver->execute($this);
-
-        return new Response($response, $this->getApiMethod());
+        return $this->getData()->getResponse();
     }
 }

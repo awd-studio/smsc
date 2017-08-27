@@ -90,7 +90,7 @@ class Response
      */
     public function hasError()
     {
-        return (bool) $this->response->error_code;
+        return (bool) @$this->response->error_code;
     }
 
     /**

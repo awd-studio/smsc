@@ -187,6 +187,8 @@ final class Settings
     {
         if ($this->validApiMethod($method)) {
             return 'https://' . $this->getHost() . "/sys/$method.php";
+        } else {
+            throw new \Exception('API URL cant be generated!');
         }
     }
 

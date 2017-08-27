@@ -12,6 +12,7 @@
 namespace Smsc\Services;
 
 
+use Smsc\Request\CurlRequest;
 use Smsc\Request\RequestInterface;
 use Smsc\Response\Response;
 use Smsc\Settings\Settings;
@@ -50,6 +51,14 @@ abstract class AbstractSmscService
 
 
     /**
+     * Response.
+     *
+     * @var mixed
+     */
+    protected $data;
+
+
+    /**
      * Message constructor.
      *
      * @param Settings $settings
@@ -59,6 +68,9 @@ abstract class AbstractSmscService
     {
         $this->settings = $settings;
         $this->options  = $options;
+
+        // Set current API method
+        $this->setApiMethod();
     }
 
 
@@ -109,25 +121,18 @@ abstract class AbstractSmscService
     }
 
     /**
-     * Set current API method.
-     *
-     * @param string $method
-     */
-    public function setApiMethod(string $method)
-    {
-        if ($this->settings->validApiMethod($method)) {
-            $this->apiMethod = $method;
-        }
-    }
-
-    /**
      * Get current API method.
      *
      * @return string
+     * @throws \Exception
      */
     public function getApiMethod()
     {
-        return $this->apiMethod;
+        if (!empty($this->apiMethod) && $this->settings->validApiMethod($this->apiMethod)) {
+            return $this->apiMethod;
+        } else {
+            throw new \Exception('No API method!');
+        }
     }
 
     /**
@@ -141,11 +146,59 @@ abstract class AbstractSmscService
     }
 
     /**
-     * Check balance.
-     *
-     * @param RequestInterface|null $driver RequestInterface class name.
-     *
      * @return Response
      */
-    abstract public function send(RequestInterface $driver = null);
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param Response $response
+     */
+    public function setData(Response $response)
+    {
+        $this->data = $response;
+    }
+
+
+    /**
+     * Get request driver.
+     *
+     * @param RequestInterface|null $driver
+     *
+     * @return CurlRequest|RequestInterface
+     */
+    public function getRequestDriver(RequestInterface $driver = null)
+    {
+        return isset($driver) ? $driver : new CurlRequest;
+    }
+
+
+    /**
+     * Send request and set response.
+     *
+     * @param RequestInterface|null $driver
+     */
+    public function send(RequestInterface $driver = null)
+    {
+        $rawResponse = $this->getRequestDriver($driver)->execute($this);
+        $this->setData(new Response($rawResponse, $this->getApiMethod()));
+    }
+
+
+    /**
+     * Set current API method.
+     */
+    abstract public function setApiMethod();
+
+
+    /**
+     * Processing response.
+     *
+     * Helper function for produced more helpful response.
+     *
+     * @return mixed
+     */
+    abstract public function results();
 }

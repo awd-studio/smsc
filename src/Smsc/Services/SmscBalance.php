@@ -12,11 +12,6 @@
 namespace Smsc\Services;
 
 
-use Smsc\Request\RequestInterface;
-use Smsc\Request\CurlRequest;
-use Smsc\Response\Response;
-
-
 /**
  * Class Message
  *
@@ -37,22 +32,21 @@ class SmscBalance extends AbstractSmscService
 
 
     /**
-     * Check balance.
-     *
-     * @param RequestInterface|null $driver RequestInterface class name.
-     *
-     * @return Response
+     * Set current API method.
      */
-    public function send(RequestInterface $driver = null)
+    public function setApiMethod()
     {
-        $this->setApiMethod('balance');
+        $this->apiMethod = 'balance';
+    }
 
-        if (!isset($driver)) {
-            $driver = new CurlRequest;
-        }
 
-        $response = $driver->execute($this);
-
-        return new Response($response, $this->getApiMethod());
+    /**
+     * Processing response.
+     *
+     * @return mixed
+     */
+    public function results()
+    {
+        return $this->getData()->getResponse();
     }
 }
