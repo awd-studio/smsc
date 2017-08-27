@@ -80,12 +80,32 @@ final class Settings
      * @param string $host
      * @param string $sender
      */
-    public function __construct($login, $psw, $host = self::SMSC_HOST_UA, $sender = '')
+    public function __construct($login = null, $psw = null, $host = null, $sender = null)
     {
-        $this->setLogin($login);
-        $this->setPsw($psw);
-        $this->setHost($host);
-        $this->setSender($sender);
+        $this->login  = $login;
+        $this->psw    = $psw;
+        $this->host   = $host;
+        $this->sender = $sender;
+
+        $this->setDefaults();
+    }
+
+    /**
+     * Set default values.
+     */
+    private function setDefaults()
+    {
+        $this->host === null ? $this->host : $this->getDefaultHost();
+    }
+
+    /**
+     * Check valid settings.
+     *
+     * @return bool
+     */
+    public function valid()
+    {
+        return ($this->login !== null && $this->psw !== null && $this->host !== null);
     }
 
     /**
@@ -129,13 +149,26 @@ final class Settings
     }
 
     /**
+     * Default host.
+     *
+     * @return string
+     */
+    public function getDefaultHost()
+    {
+        return self::SMSC_HOST_UA;
+
+    }
+
+    /**
      * @param string $host
      *
      * @throws \Exception
      */
     public function setHost(string $host)
     {
-        if (in_array($host, $this->getApiHosts())) {
+        if (empty($host)) {
+            $this->host = self::SMSC_HOST_UA;
+        } elseif (in_array($host, $this->getApiHosts())) {
             $this->host = $host;
         } else {
             throw new \Exception("Host \"$host\" not supported!");

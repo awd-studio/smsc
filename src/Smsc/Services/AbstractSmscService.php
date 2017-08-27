@@ -71,16 +71,22 @@ abstract class AbstractSmscService
      *
      * @param Settings $settings
      * @param array    $options
+     *
+     * @throws \Exception
      */
     public function __construct(Settings $settings, $options = [])
     {
-        $this->settings = $settings;
-        $this->options  = $options;
+        if ($settings->valid()) {
+            $this->settings = $settings;
+            $this->options  = $options;
 
-        $this->collectParams();
+            $this->collectParams();
 
-        // Set current API method
-        $this->setApiMethod();
+            // Set current API method
+            $this->setApiMethod();
+        } else {
+            throw new \Exception('Settings not valid!');
+        }
     }
 
 
@@ -118,17 +124,6 @@ abstract class AbstractSmscService
 
 
     /**
-     * Get query parameters.
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-
-    /**
      * Collect parameters for query.
      */
     public function collectParams()
@@ -136,11 +131,21 @@ abstract class AbstractSmscService
         $this->params = [
                 'login'   => $this->settings->getLogin(),
                 'psw'     => $this->settings->getPsw(),
-//                'sender'  => $this->settings->getSender(),
                 'charset' => 'utf-8',
                 'fmt'     => 3,
                 'pp'      => '343371',
             ] + $this->options;
+    }
+
+
+    /**
+     * Get query parameters.
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
     }
 
 
