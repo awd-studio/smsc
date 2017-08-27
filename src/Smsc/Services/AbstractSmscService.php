@@ -59,6 +59,14 @@ abstract class AbstractSmscService
 
 
     /**
+     * Query parameters.
+     *
+     * @var mixed
+     */
+    protected $params;
+
+
+    /**
      * Message constructor.
      *
      * @param Settings $settings
@@ -68,6 +76,8 @@ abstract class AbstractSmscService
     {
         $this->settings = $settings;
         $this->options  = $options;
+
+        $this->collectParams();
 
         // Set current API method
         $this->setApiMethod();
@@ -97,14 +107,36 @@ abstract class AbstractSmscService
 
 
     /**
-     * Collect parameters for query.
+     * Add additional query parameters.
+     *
+     * @param array $params
+     */
+    public function addParams(array $params)
+    {
+        $this->params += $params;
+    }
+
+
+    /**
+     * Get query parameters.
+     *
+     * @return array
      */
     public function getParams()
     {
-        return [
+        return $this->params;
+    }
+
+
+    /**
+     * Collect parameters for query.
+     */
+    public function collectParams()
+    {
+        $this->params = [
                 'login'   => $this->settings->getLogin(),
                 'psw'     => $this->settings->getPsw(),
-                'sender'  => $this->settings->getSender(),
+//                'sender'  => $this->settings->getSender(),
                 'charset' => 'utf-8',
                 'fmt'     => 3,
                 'pp'      => '343371',

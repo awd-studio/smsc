@@ -13,6 +13,15 @@ Supported gateways:
 - https://smscentre.com
 
 
+## Installing
+
+SMSC library can be installed directly from Composer.
+
+```
+composer require awd-studio/smsc
+```
+
+
 ## How to use:
 
 ### Send message
@@ -33,6 +42,11 @@ $sms = new SmscMessage($settings, $phones, $message, $options);
 
 // Send message
 $sms->send();
+
+// Get response data
+$response = $smsc->getData()->getResponse();
+// Or get processed results
+$response = $smsc->results();
 ```
 
 ### Check balance
@@ -50,4 +64,25 @@ $balance = new SmscBalance($settings);
 
 // Send request
 $balance->send();
+```
+
+### Get Sender-IDs
+```php
+<?php
+
+use \Smsc\Settings;
+use \Smsc\SmscSenders;
+
+// Create new settings item
+$settings = new Settings($MY_LOGIN, $MY_PASSWORD);
+
+// Create new balance
+$senders = new SmscSenders($settings);
+$senders->getSenders();
+
+// Send request
+$senders->send();
+
+// Manage Sender IDs
+$arr = $smsc->results();
 ```

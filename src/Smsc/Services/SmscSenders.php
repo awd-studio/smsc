@@ -21,13 +21,11 @@ class SmscSenders extends AbstractSmscService
 {
 
     /**
-     * Collect parameters for query.
+     * Get current senders.
      */
-    public function getParams()
+    public function getSenders()
     {
-        return parent::getParams() + [
-                'get' => true,
-            ];
+        $this->addParams(['get' => true,]);
     }
 
 
