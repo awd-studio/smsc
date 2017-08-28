@@ -95,7 +95,9 @@ final class Settings
      */
     private function setDefaults()
     {
-        $this->host === null ? $this->host : $this->getDefaultHost();
+        if ($this->host === null) {
+            $this->host = $this->getDefaultHost();
+        }
     }
 
     /**
@@ -105,7 +107,7 @@ final class Settings
      */
     public function valid()
     {
-        return ($this->login !== null && $this->psw !== null && $this->host !== null);
+        return (!empty($this->login) && !empty($this->psw) && !empty($this->host));
     }
 
     /**
@@ -164,15 +166,27 @@ final class Settings
      *
      * @throws \Exception
      */
-    public function setHost(string $host)
+    public function setHost(string $host = null)
     {
         if (empty($host)) {
-            $this->host = self::SMSC_HOST_UA;
+            $this->host = $this->getDefaultHost();
         } elseif (in_array($host, $this->getApiHosts())) {
             $this->host = $host;
         } else {
             throw new \Exception("Host \"$host\" not supported!");
         }
+    }
+
+    /**
+     * Validate host by name.
+     *
+     * @param string $host
+     *
+     * @return bool
+     */
+    public function validHost(string $host)
+    {
+        return in_array($host, $this->getApiHosts());
     }
 
     /**
