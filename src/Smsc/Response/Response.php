@@ -126,7 +126,7 @@ class Response
      */
     public function getResponse()
     {
-        return $this->hasError() ? null : $this->response;
+        return $this->response;
     }
 
     /**
