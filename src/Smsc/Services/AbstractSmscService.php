@@ -9,233 +9,272 @@
  * @link      https://github.com/awd-studio/smsc
  */
 
-namespace Smsc\Services;
-
-
-use Smsc\Request\CurlRequest;
-use Smsc\Request\RequestInterface;
-use Smsc\Response\Response;
-use Smsc\Settings\Settings;
-
+namespace Smsc\Settings;
 
 /**
- * Class Message
+ * Class Settings
  *
- * @package Smsc\Message
+ * @package Smsc\Settings
  */
-abstract class AbstractSmscService
+final class Settings
 {
 
     /**
-     * Settings.
-     *
-     * @var Settings
+     * API Hosts.
      */
-    protected $settings;
-
+    const SMSC_HOST_UA = 'smsc.ua';
+    const SMSC_HOST_RU = 'smsc.ru';
+    const SMSC_HOST_KZ = 'smsc.kz';
+    const SMSC_HOST_TJ = 'smsc.tj';
+    const SMSC_HOST_CY = 'smscentre.com';
 
     /**
-     * Additional options.
+     * API methods.
+     */
+    const SMSC_METHOD_SEND           = 'send';
+    const SMSC_METHOD_TEMPLATES      = 'templates';
+    const SMSC_METHOD_JOBS           = 'jobs';
+    const SMSC_METHOD_STATUS         = 'status';
+    const SMSC_METHOD_BALANCE        = 'balance';
+    const SMSC_METHOD_PHONES         = 'phones';
+    const SMSC_METHOD_USERS          = 'users';
+    const SMSC_METHOD_SENDERS        = 'senders';
+    const SMSC_METHOD_GET            = 'get';
+    const SMSC_METHOD_INFO           = 'info';
+    const SMSC_METHOD_GET_MNP        = 'get_mnp';
+    const SMSC_METHOD_RECEIVE_PHONES = 'receive_phones';
+
+    /**
+     * Account login.
      *
      * @var string
      */
-    protected $options;
-
+    protected $login;
 
     /**
-     * API method.
+     * Account password.
      *
      * @var string
      */
-    protected $apiMethod;
-
-
-    /**
-     * Response.
-     *
-     * @var mixed
-     */
-    protected $data;
-
+    protected $psw;
 
     /**
-     * Query parameters.
+     * API Host.
      *
-     * @var mixed
+     * @var string
      */
-    protected $params;
-
+    protected $host;
 
     /**
-     * Message constructor.
+     * Sender ID.
      *
-     * @param Settings $settings
-     * @param array    $options
-     *
-     * @throws \Exception
+     * @var string
      */
-    public function __construct(Settings $settings, $options = [])
+    protected $sender;
+
+    /**
+     * Settings constructor.
+     *
+     * @param string $login
+     * @param string $psw
+     * @param string $host
+     * @param string $sender
+     */
+    public function __construct($login = null, $psw = null, $host = null, $sender = null)
     {
-        if ($settings->valid()) {
-            $this->settings = $settings;
-            $this->options  = $options;
+        $this->login  = $login;
+        $this->psw    = $psw;
+        $this->host   = $host;
+        $this->sender = $sender;
 
-            $this->collectParams();
-
-            // Set current API method
-            $this->setApiMethod();
-        } else {
-            throw new \Exception('Settings not valid!');
-        }
-    }
-
-
-    /**
-     * Get options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-
-    /**
-     * Set options.
-     *
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-
-
-    /**
-     * Add additional query parameters.
-     *
-     * @param array $params
-     */
-    public function addParams(array $params)
-    {
-        $this->params += $params;
-    }
-
-
-    /**
-     * Collect parameters for query.
-     */
-    public function collectParams()
-    {
-        $this->params = [
-                'login'   => $this->settings->getLogin(),
-                'psw'     => $this->settings->getPsw(),
-                'charset' => 'utf-8',
-                'fmt'     => 3,
-                'pp'      => '343371',
-            ] + $this->options;
-    }
-
-
-    /**
-     * Get query parameters.
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-
-    /**
-     * Return prepared query params for post request.
-     */
-    public function buildParams()
-    {
-        return http_build_query($this->getParams());
+        $this->setDefaults();
     }
 
     /**
-     * Get current API method.
-     *
-     * @return string
-     * @throws \Exception
+     * Set default values.
      */
-    public function getApiMethod()
+    private function setDefaults()
     {
-        if (!empty($this->apiMethod) && $this->settings->validApiMethod($this->apiMethod)) {
-            return $this->apiMethod;
-        } else {
-            throw new \Exception('No API method!');
+        if ($this->host === null) {
+            $this->host = $this->getDefaultHost();
         }
     }
 
     /**
-     * Get current API method.
+     * Check valid settings.
+     *
+     * @return bool
+     */
+    public function valid()
+    {
+        return ($this->login !== null && $this->psw !== null && $this->host !== null);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param string $login
+     */
+    public function setLogin(string $login)
+    {
+        $this->login = $login;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPsw()
+    {
+        return $this->psw;
+    }
+
+    /**
+     * @param string $psw
+     */
+    public function setPsw(string $psw)
+    {
+        $this->psw = $psw;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * Default host.
      *
      * @return string
      */
-    public function getApiUrl()
+    public function getDefaultHost()
     {
-        return $this->settings->getApiUrl($this->getApiMethod());
+        return self::SMSC_HOST_UA;
+
     }
 
     /**
-     * @return Response
+     * @param string $host
+     *
+     * @throws \Exception
      */
-    public function getData()
+    public function setHost(string $host)
     {
-        return $this->data;
+        if (empty($host)) {
+            $this->host = self::SMSC_HOST_UA;
+        } elseif (in_array($host, $this->getApiHosts())) {
+            $this->host = $host;
+        } else {
+            throw new \Exception("Host \"$host\" not supported!");
+        }
     }
 
     /**
-     * @param Response $response
+     * Validate host by name.
+     *
+     * @param string $host
+     *
+     * @return bool
      */
-    public function setData(Response $response)
+    public function validHost(string $host)
     {
-        $this->data = $response;
+        return in_array($host, $this->getApiHosts());
     }
 
-
     /**
-     * Get request driver.
-     *
-     * @param RequestInterface|null $driver
-     *
-     * @return CurlRequest|RequestInterface
+     * @return string | null
      */
-    public function getRequestDriver(RequestInterface $driver = null)
+    public function getSender()
     {
-        return isset($driver) ? $driver : new CurlRequest;
+        return $this->sender;
     }
 
-
     /**
-     * Send request and set response.
-     *
-     * @param RequestInterface|null $driver
+     * @param string $sender
      */
-    public function send(RequestInterface $driver = null)
+    public function setSender(string $sender)
     {
-        $rawResponse = $this->getRequestDriver($driver)->execute($this);
-        $this->setData(new Response($rawResponse, $this->getApiMethod()));
+        $this->sender = $sender;
     }
 
+    /**
+     * Validate API methods.
+     *
+     * @param string $method
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function validApiMethod(string $method)
+    {
+        if (in_array($method, $this->getApiMethods())) {
+            return true;
+        } else {
+            throw new \Exception("Method \"$method\" not supported!");
+        }
+    }
 
     /**
-     * Set current API method.
+     * Get API URL
+     *
+     * @param string $method
+     *
+     * @return string
+     * @throws \Exception
      */
-    abstract public function setApiMethod();
-
+    public function getApiUrl(string $method)
+    {
+        if ($this->validApiMethod($method)) {
+            return 'https://' . $this->getHost() . "/sys/$method.php";
+        } else {
+            throw new \Exception('API URL cant be generated!');
+        }
+    }
 
     /**
-     * Processing response.
-     *
-     * Helper function for produced more helpful response.
-     *
-     * @return mixed
+     * Get available API hosts.
      */
-    abstract public function results();
+    public function getApiHosts()
+    {
+        return self::getConstants('SMSC_HOST_');
+    }
+
+    /**
+     * Get available API methods.
+     */
+    public function getApiMethods()
+    {
+        return self::getConstants('SMSC_METHOD_');
+    }
+
+    /**
+     * Get self constants by pattern.
+     *
+     * @param string $needle
+     *
+     * @return array
+     */
+    private static function getConstants(string $needle)
+    {
+        $reflection   = new \ReflectionClass(__CLASS__);
+        $allConstants = $reflection->getConstants();
+
+        $constants = [];
+
+        foreach ($allConstants as $name => $constant) {
+            if (0 === strpos($name, $needle)) {
+                $constants[$name] = $constant;
+            }
+        }
+
+        return $constants;
+    }
 }

@@ -45,8 +45,15 @@ class SmscSenders extends AbstractSmscService
      */
     public function results()
     {
-        return array_map(function ($sender) {
-            return $sender->sender;
-        }, (array) $this->getData()->getResponse());
+        $senders = null;
+
+        if ($response = $this->getData()->getResponse()) {
+
+            $senders = array_map(function ($sender) {
+                return $sender->sender;
+            }, (array) $response);
+        }
+
+        return $senders;
     }
 }

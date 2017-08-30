@@ -1,6 +1,6 @@
 # SMSC
 
-### Simple library for sending SMS and Viber messages
+### Simple library for sending SMS and other messages
 
 An API for sending short messages with the SMSC services.
 
@@ -15,7 +15,7 @@ Supported gateways:
 
 ## Installing
 
-SMSC library can be installed directly from Composer.
+SMSC library can be installed directly from **Composer**.
 
 ```
 composer require awd-studio/smsc
@@ -84,7 +84,7 @@ $senders->getSenders();
 $senders->send();
 
 // Manage Sender IDs
-$arr = $smsc->results();
+$arr = $senders->results();
 ```
 
 ### More examples

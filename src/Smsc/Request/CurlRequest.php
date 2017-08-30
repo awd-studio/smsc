@@ -41,10 +41,10 @@ class CurlRequest implements RequestInterface
 
             static $chanel = 0; // keepalive
 
+            $response = null;
 
             $url  = $service->getApiUrl();
             $post = $service->buildParams();
-
 
             if (!$chanel) {
                 $chanel = curl_init();
@@ -54,10 +54,10 @@ class CurlRequest implements RequestInterface
                 curl_setopt($chanel, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
                 curl_setopt($chanel, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($chanel, CURLOPT_POSTFIELDS, $post);
-            }
 
-            $response = curl_exec($chanel);
-            curl_close($chanel);
+                $response = curl_exec($chanel);
+                curl_close($chanel);
+            }
 
             return $response;
         } else {
