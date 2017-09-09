@@ -1,7 +1,8 @@
 {
     "name": "awd-studio/smsc",
-    "description": "An API for sending short messages with the https://smsc.ua / https://smsc.ru / https://smsc.kz / https://smsc.tj / https://smscentre.com services.",
+    "description": "An API for sending messages with the https://smsc.ua / https://smsc.ru / https://smsc.kz / https://smsc.tj / https://smscentre.com services.",
     "type": "library",
+    "keywords": ["smsc", "sms", "api"],
     "license": "MIT",
     "authors": [
         {
@@ -9,10 +10,12 @@
             "email": "awd.com.ua@gmail.com"
         }
     ],
+    "require": {
+        "php": ">=5.5.9"
+    },
     "autoload": {
         "psr-4": {
             "Smsc\\": "src/Smsc"
         }
-    },
-    "require": {}
+    }
 }
