@@ -121,7 +121,7 @@ final class Settings
     /**
      * @param string $login
      */
-    public function setLogin(string $login)
+    public function setLogin($login)
     {
         $this->login = $login;
     }
@@ -137,7 +137,7 @@ final class Settings
     /**
      * @param string $psw
      */
-    public function setPsw(string $psw)
+    public function setPsw($psw)
     {
         $this->psw = $psw;
     }
@@ -166,7 +166,7 @@ final class Settings
      *
      * @throws \Exception
      */
-    public function setHost(string $host = null)
+    public function setHost($host = null)
     {
         if (empty($host)) {
             $this->host = $this->getDefaultHost();
@@ -184,7 +184,7 @@ final class Settings
      *
      * @return bool
      */
-    public function validHost(string $host)
+    public function validHost($host)
     {
         return in_array($host, $this->getApiHosts());
     }
@@ -200,7 +200,7 @@ final class Settings
     /**
      * @param string $sender
      */
-    public function setSender(string $sender)
+    public function setSender($sender)
     {
         $this->sender = $sender;
     }
@@ -213,7 +213,7 @@ final class Settings
      * @return bool
      * @throws \Exception
      */
-    public function validApiMethod(string $method)
+    public function validApiMethod($method)
     {
         if (in_array($method, $this->getApiMethods())) {
             return true;
@@ -230,7 +230,7 @@ final class Settings
      * @return string
      * @throws \Exception
      */
-    public function getApiUrl(string $method)
+    public function getApiUrl($method)
     {
         if ($this->validApiMethod($method)) {
             return 'https://' . $this->getHost() . "/sys/$method.php";
@@ -262,7 +262,7 @@ final class Settings
      *
      * @return array
      */
-    private static function getConstants(string $needle)
+    private static function getConstants($needle)
     {
         $reflection   = new \ReflectionClass(__CLASS__);
         $allConstants = $reflection->getConstants();

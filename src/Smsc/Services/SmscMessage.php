@@ -61,7 +61,7 @@ class SmscMessage extends AbstractSmscService
      *
      * @param string $subj
      */
-    public function mms(string $subj = '')
+    public function mms($subj = '')
     {
         $this->addParams(['mms' => true]);
 
@@ -75,7 +75,7 @@ class SmscMessage extends AbstractSmscService
      *
      * @param string $subj
      */
-    public function email(string $subj = '')
+    public function email($subj = '')
     {
         $this->addParams(['mail' => true]);
 
@@ -136,7 +136,7 @@ class SmscMessage extends AbstractSmscService
      *
      * @param string $voice
      */
-    public function call(string $voice = 'm')
+    public function call($voice = 'm')
     {
         $this->addParams([
             'call'  => true,
@@ -159,7 +159,7 @@ class SmscMessage extends AbstractSmscService
      *
      * @param string $phones Coma-separated phones
      */
-    public function addPhones(string $phones)
+    public function addPhones($phones)
     {
         $this->phones .= ',' . $phones;
     }
@@ -181,7 +181,7 @@ class SmscMessage extends AbstractSmscService
      *
      * @param string $phones
      */
-    public function setPhones(string $phones)
+    public function setPhones($phones)
     {
         $this->phones = $phones;
     }
@@ -203,7 +203,7 @@ class SmscMessage extends AbstractSmscService
      *
      * @param string $message
      */
-    public function setMessage(string $message)
+    public function setMessage($message)
     {
         $this->message = $message;
     }
