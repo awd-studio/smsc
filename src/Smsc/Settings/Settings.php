@@ -72,6 +72,7 @@ final class Settings
      */
     protected $sender;
 
+
     /**
      * Settings constructor.
      *

@@ -13,6 +13,7 @@ namespace Smsc\Services;
 
 
 use Smsc\Request\CurlRequest;
+use Smsc\Request\GuzzleRequest;
 use Smsc\Request\RequestInterface;
 use Smsc\Response\Response;
 use Smsc\Settings\Settings;
@@ -67,7 +68,7 @@ abstract class AbstractSmscService
 
 
     /**
-     * Message constructor.
+     * Service constructor.
      *
      * @param Settings $settings
      * @param array    $options
@@ -202,7 +203,15 @@ abstract class AbstractSmscService
      */
     public function getRequestDriver(RequestInterface $driver = null)
     {
-        return isset($driver) ? $driver : new CurlRequest;
+        if (!isset($driver)) {
+            if (class_exists('GuzzleHttp\\Client')) {
+                $driver = new GuzzleRequest;
+            } else {
+                $driver = new CurlRequest;
+            }
+        }
+
+        return $driver;
     }
 
 

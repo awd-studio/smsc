@@ -17,9 +17,9 @@ use Smsc\Services\AbstractSmscService;
 
 
 /**
- * Class CurlMessage
+ * Class CurlRequest
  *
- * @package Smsc\CurlMessage
+ * @package Smsc\Request
  */
 class CurlRequest implements RequestInterface
 {
