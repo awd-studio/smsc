@@ -1,9 +1,12 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: awd
- * Date: 20.08.17
- * Time: 4:30
+ * This file is part of SMSC PHP library for sending
+ * short messages.
+ *
+ * @author    Anton Karpov <awd.com.ua@gmail.com>
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT
+ * @link      https://github.com/awd-studio/smsc
  */
 
 namespace Smsc\Request;

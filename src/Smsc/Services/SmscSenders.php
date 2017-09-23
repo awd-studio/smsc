@@ -25,7 +25,7 @@ class SmscSenders extends AbstractSmscService
      */
     public function getSenders()
     {
-        $this->addParams(['get' => true]);
+        $this->settings->mergeOptions(['get' => true]);
     }
 
 

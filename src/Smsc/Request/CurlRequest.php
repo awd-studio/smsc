@@ -24,9 +24,6 @@ use Smsc\Services\AbstractSmscService;
 class CurlRequest implements RequestInterface
 {
 
-    const CONNECTTIMEOUT = 5;
-    const TIMEOUT        = 60;
-
     /**
      * Execute request.
      *
@@ -43,8 +40,10 @@ class CurlRequest implements RequestInterface
 
             $response = null;
 
+            $settings = $service->getSettings();
+
             $url  = $service->getApiUrl();
-            $post = $service->buildParams();
+            $post = $settings->getPostData();
 
             if (!$chanel) {
                 $chanel = curl_init();

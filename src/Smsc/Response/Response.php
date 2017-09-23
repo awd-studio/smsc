@@ -83,6 +83,7 @@ class Response
         $this->statusCodeMessage = $this->hasError() ? $this->getErrorMessage() : '';
     }
 
+
     /**
      * Check if operation has error.
      *
@@ -92,6 +93,7 @@ class Response
     {
         return (bool) @$this->response->error_code;
     }
+
 
     /**
      * Error message.
@@ -113,6 +115,7 @@ class Response
         return $message;
     }
 
+
     /**
      * @return string
      */
@@ -120,6 +123,7 @@ class Response
     {
         return $this->rawResponse;
     }
+
 
     /**
      * @return array
@@ -129,6 +133,7 @@ class Response
         return $this->response;
     }
 
+
     /**
      * @return int
      */
@@ -136,6 +141,7 @@ class Response
     {
         return $this->statusCode;
     }
+
 
     /**
      * @return string
@@ -145,6 +151,7 @@ class Response
         return $this->statusMessage;
     }
 
+
     /**
      * @return string
      */
@@ -152,6 +159,7 @@ class Response
     {
         return $this->statusCodeMessage;
     }
+
 
     /**
      * @return string

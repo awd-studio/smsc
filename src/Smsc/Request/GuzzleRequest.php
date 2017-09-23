@@ -36,8 +36,10 @@ class GuzzleRequest implements RequestInterface
     public function execute(AbstractSmscService $service)
     {
 
+        $settings = $service->getSettings();
+
         $uri  = $service->getApiUrl();
-        $body = $service->buildParams();
+        $body = $settings->getPostData();
 
         try {
             $client = new Client();

@@ -11,6 +11,10 @@
 
 namespace Smsc\Settings;
 
+use Smsc\Request\CurlRequest;
+use Smsc\Request\GuzzleRequest;
+use Smsc\Request\RequestInterface;
+
 /**
  * Class Settings
  *
@@ -44,6 +48,7 @@ final class Settings
     const SMSC_METHOD_GET_MNP        = 'get_mnp';
     const SMSC_METHOD_RECEIVE_PHONES = 'receive_phones';
 
+
     /**
      * Account login.
      *
@@ -66,40 +71,92 @@ final class Settings
     protected $host;
 
     /**
-     * Sender ID.
+     * Options.
      *
-     * @var string
+     * @var array
      */
-    protected $sender;
+    protected $options;
+
+    /**
+     * Request driver.
+     *
+     * @var RequestInterface
+     */
+    protected $driver;
 
 
     /**
      * Settings constructor.
      *
-     * @param string $login
-     * @param string $psw
-     * @param string $host
-     * @param string $sender
+     * @param array            $options Key-value options list
+     * @param RequestInterface $driver
+     *
+     * @internal param string $login
+     * @internal param string $psw
+     * @internal param string $host
+     * @internal param string $sender
      */
-    public function __construct($login = null, $psw = null, $host = null, $sender = null)
+    public function __construct($options = [], RequestInterface $driver = null)
     {
-        $this->login  = $login;
-        $this->psw    = $psw;
-        $this->host   = $host;
-        $this->sender = $sender;
+        $this->options = $options;
+        $this->driver  = $driver;
 
+        $this->setParams();
         $this->setDefaults();
     }
+
+
+    /**
+     * Set default parameters.
+     */
+    private function setParams()
+    {
+        $optionList = [
+            'login',
+            'psw',
+            'host',
+        ];
+
+        foreach ($optionList as $option) {
+            if ($val = $this->getOption($option)) {
+                $this->$option = $val;
+            }
+        }
+    }
+
 
     /**
      * Set default values.
      */
     private function setDefaults()
     {
+        /* Set default host */
         if ($this->host === null) {
             $this->host = $this->getDefaultHost();
         }
+
+        /* Set default driver */
+        if ($this->driver === null) {
+            $this->driver = $this->getDefaultDriver();
+        }
+
+        /* Set default options */
+        $this->setDefaultOptions();
     }
+
+
+    /**
+     * Collect parameters for query.
+     */
+    public function setDefaultOptions()
+    {
+        $this->mergeOptions([
+            'charset' => 'utf-8',
+            'fmt'     => 3,
+            'pp'      => '343371',
+        ]);
+    }
+
 
     /**
      * Check valid settings.
@@ -111,6 +168,7 @@ final class Settings
         return (!empty($this->login) && !empty($this->psw) && !empty($this->host));
     }
 
+
     /**
      * @return string
      */
@@ -118,6 +176,7 @@ final class Settings
     {
         return $this->login;
     }
+
 
     /**
      * @param string $login
@@ -127,6 +186,7 @@ final class Settings
         $this->login = $login;
     }
 
+
     /**
      * @return string
      */
@@ -134,6 +194,7 @@ final class Settings
     {
         return $this->psw;
     }
+
 
     /**
      * @param string $psw
@@ -143,6 +204,7 @@ final class Settings
         $this->psw = $psw;
     }
 
+
     /**
      * @return string
      */
@@ -150,6 +212,7 @@ final class Settings
     {
         return $this->host;
     }
+
 
     /**
      * Default host.
@@ -161,6 +224,7 @@ final class Settings
         return self::SMSC_HOST_UA;
 
     }
+
 
     /**
      * @param string $host
@@ -178,6 +242,7 @@ final class Settings
         }
     }
 
+
     /**
      * Validate host by name.
      *
@@ -190,21 +255,6 @@ final class Settings
         return in_array($host, $this->getApiHosts());
     }
 
-    /**
-     * @return string | null
-     */
-    public function getSender()
-    {
-        return $this->sender;
-    }
-
-    /**
-     * @param string $sender
-     */
-    public function setSender($sender)
-    {
-        $this->sender = $sender;
-    }
 
     /**
      * Validate API methods.
@@ -223,6 +273,7 @@ final class Settings
         }
     }
 
+
     /**
      * Get API URL
      *
@@ -234,11 +285,12 @@ final class Settings
     public function getApiUrl($method)
     {
         if ($this->validApiMethod($method)) {
-            return 'https://' . $this->getHost() . "/sys/$method.php";
+            return 'https://' . $this->host . "/sys/$method.php";
         } else {
             throw new \Exception('API URL cant be generated!');
         }
     }
+
 
     /**
      * Get available API hosts.
@@ -248,6 +300,7 @@ final class Settings
         return self::getConstants('SMSC_HOST_');
     }
 
+
     /**
      * Get available API methods.
      */
@@ -255,6 +308,7 @@ final class Settings
     {
         return self::getConstants('SMSC_METHOD_');
     }
+
 
     /**
      * Get self constants by pattern.
@@ -277,5 +331,138 @@ final class Settings
         }
 
         return $constants;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+
+    /**
+     * @param array $options
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
+
+
+    /**
+     * Get single option.
+     *
+     * @param string $string
+     *
+     * @return mixed|null
+     */
+    public function getOption($string)
+    {
+        $options = $this->getOptions();
+
+        return isset($options[$string]) ? $options[$string] : null;
+    }
+
+
+    /**
+     * Set single option.
+     *
+     * @param $key
+     * @param $value
+     *
+     * @return array New options array.
+     *
+     */
+    public function setOption($key, $value)
+    {
+        return $this->mergeOptions([$key => $value]);
+    }
+
+
+    /**
+     * Merge exists options with added.
+     *
+     * @param array $options
+     *
+     * @return array
+     */
+    public function mergeOptions(array $options)
+    {
+        $this->options = $this->getOptions() + $options;
+
+        return $this->options;
+    }
+
+
+    /**
+     * @return string | null
+     */
+    public function getSender()
+    {
+        $sender = $this->getOption('sender');
+
+        return isset($sender) ? $sender : '';
+    }
+
+
+    /**
+     * Set Sender ID.
+     *
+     * @param string $sender
+     *
+     * @return array
+     */
+    public function setSender($sender)
+    {
+        return $this->setOption('sender', $sender);
+    }
+
+
+    /**
+     * @return RequestInterface
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+
+    /**
+     * Set Sender ID.
+     *
+     * @param RequestInterface $driver
+     */
+    public function setDriver(RequestInterface $driver)
+    {
+        $this->driver = $driver;
+    }
+
+
+    /**
+     * Get default request driver.
+     *
+     * @return RequestInterface
+     */
+    private function getDefaultDriver()
+    {
+        if (class_exists('GuzzleHttp\\Client')) {
+            $driver = new GuzzleRequest;
+        } else {
+            $driver = new CurlRequest;
+        }
+
+        return $driver;
+    }
+
+
+    /**
+     * Return prepared query params for post request.
+     */
+    public function getPostData()
+    {
+        return http_build_query($this->getOptions());
     }
 }

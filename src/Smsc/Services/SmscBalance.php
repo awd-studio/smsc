@@ -11,6 +11,8 @@
 
 namespace Smsc\Services;
 
+use Smsc\Settings\Settings;
+
 
 /**
  * Class Message
@@ -21,13 +23,18 @@ class SmscBalance extends AbstractSmscService
 {
 
     /**
-     * Collect parameters for query.
+     * Message constructor.
+     *
+     * @param Settings $settings
+     * @param array    $options
      */
-    public function getParams()
+    public function __construct(Settings $settings, $options = [])
     {
-        return parent::getParams() + [
-                'cur' => true,
-            ];
+        parent::__construct($settings, $options);
+
+        $this->settings->mergeOptions([
+            'cur' => true,
+        ]);
     }
 
 

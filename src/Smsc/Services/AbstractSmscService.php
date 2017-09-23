@@ -34,15 +34,6 @@ abstract class AbstractSmscService
      */
     protected $settings;
 
-
-    /**
-     * Additional options.
-     *
-     * @var string
-     */
-    protected $options;
-
-
     /**
      * API method.
      *
@@ -50,21 +41,12 @@ abstract class AbstractSmscService
      */
     protected $apiMethod;
 
-
     /**
      * Response.
      *
      * @var mixed
      */
     protected $data;
-
-
-    /**
-     * Query parameters.
-     *
-     * @var mixed
-     */
-    protected $params;
 
 
     /**
@@ -78,79 +60,23 @@ abstract class AbstractSmscService
     public function __construct(Settings $settings, $options = [])
     {
         $this->settings = $settings;
-        $this->options  = $options;
 
-        $this->collectParams();
+        $this->settings->mergeOptions($options);
+
         $this->setApiMethod();
     }
 
 
     /**
-     * Get options.
+     * Get service settings.
      *
-     * @return array
+     * @return Settings
      */
-    public function getOptions()
+    public function getSettings()
     {
-        return $this->options;
+        return $this->settings;
     }
 
-
-    /**
-     * Set options.
-     *
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-
-
-    /**
-     * Add additional query parameters.
-     *
-     * @param array $params
-     */
-    public function addParams(array $params)
-    {
-        $this->params += $params;
-    }
-
-
-    /**
-     * Collect parameters for query.
-     */
-    public function collectParams()
-    {
-        $this->params = [
-                'login'   => $this->settings->getLogin(),
-                'psw'     => $this->settings->getPsw(),
-                'charset' => 'utf-8',
-                'fmt'     => 3,
-                'pp'      => '343371',
-            ] + $this->options;
-    }
-
-
-    /**
-     * Get query parameters.
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-
-    /**
-     * Return prepared query params for post request.
-     */
-    public function buildParams()
-    {
-        return http_build_query($this->getParams());
-    }
 
     /**
      * Get current API method.
@@ -167,6 +93,7 @@ abstract class AbstractSmscService
         }
     }
 
+
     /**
      * Get current API method.
      *
@@ -177,6 +104,7 @@ abstract class AbstractSmscService
         return $this->settings->getApiUrl($this->getApiMethod());
     }
 
+
     /**
      * @return Response
      */
@@ -184,6 +112,7 @@ abstract class AbstractSmscService
     {
         return $this->data;
     }
+
 
     /**
      * @param Response $response
@@ -217,12 +146,10 @@ abstract class AbstractSmscService
 
     /**
      * Send request and set response.
-     *
-     * @param RequestInterface|null $driver
      */
-    public function send(RequestInterface $driver = null)
+    public function send()
     {
-        $rawResponse = $this->getRequestDriver($driver)->execute($this);
+        $rawResponse = $this->settings->getDriver()->execute($this);
         $this->setData(new Response($rawResponse, $this->getApiMethod()));
     }
 

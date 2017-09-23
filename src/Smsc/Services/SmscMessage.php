@@ -31,7 +31,6 @@ class SmscMessage extends AbstractSmscService
      */
     protected $phones;
 
-
     /**
      * Message.
      *
@@ -54,7 +53,13 @@ class SmscMessage extends AbstractSmscService
 
         $this->phones  = $phones;
         $this->message = $message;
+
+        $this->settings->mergeOptions([
+            'phones' => $this->phones,
+            'mes'    => $this->message,
+        ]);
     }
+
 
     /**
      * MMS message.
@@ -63,12 +68,13 @@ class SmscMessage extends AbstractSmscService
      */
     public function mms($subj = '')
     {
-        $this->addParams(['mms' => true]);
+        $this->settings->mergeOptions(['mms' => true]);
 
         if (!empty($subj)) {
-            $this->addParams(['subj' => $subj]);
+            $this->settings->mergeOptions(['subj' => $subj]);
         }
     }
+
 
     /**
      * E-mail message.
@@ -77,51 +83,56 @@ class SmscMessage extends AbstractSmscService
      */
     public function email($subj = '')
     {
-        $this->addParams(['mail' => true]);
+        $this->settings->mergeOptions(['mail' => true]);
 
         if (!empty($subj)) {
-            $this->addParams(['subj' => $subj]);
+            $this->settings->mergeOptions(['subj' => $subj]);
         }
     }
+
 
     /**
      * HLR message.
      */
     public function hlr()
     {
-        $this->addParams(['hlr' => true]);
+        $this->settings->mergeOptions(['hlr' => true]);
     }
+
 
     /**
      * Flash SMS.
      */
     public function flash()
     {
-        $this->addParams(['flash' => true]);
+        $this->settings->mergeOptions(['flash' => true]);
     }
+
 
     /**
      * Push SMS.
      */
     public function push()
     {
-        $this->addParams(['push' => true]);
+        $this->settings->mergeOptions(['push' => true]);
     }
+
 
     /**
      * Ping SMS.
      */
     public function ping()
     {
-        $this->addParams(['ping' => true]);
+        $this->settings->mergeOptions(['ping' => true]);
     }
+
 
     /**
      * Viber message.
      */
     public function viber()
     {
-        $this->addParams(['viber' => true]);
+        $this->settings->mergeOptions(['viber' => true]);
     }
 
     /**
@@ -138,7 +149,7 @@ class SmscMessage extends AbstractSmscService
      */
     public function call($voice = 'm')
     {
-        $this->addParams([
+        $this->settings->mergeOptions([
             'call'  => true,
             'voice' => $voice,
         ]);
@@ -206,40 +217,6 @@ class SmscMessage extends AbstractSmscService
     public function setMessage($message)
     {
         $this->message = $message;
-    }
-
-
-    /**
-     * Get options.
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-
-    /**
-     * Set options.
-     *
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
-    }
-
-
-    /**
-     * Collect parameters for query.
-     */
-    public function getParams()
-    {
-        return parent::getParams() + [
-                'phones' => $this->phones,
-                'mes'    => $this->message,
-            ];
     }
 
 

@@ -28,11 +28,14 @@ composer require awd-studio/smsc
 ```php
 <?php
 
-use \Smsc\Settings;
-use \Smsc\SmscMessage;
+use Smsc\Settings\Settings;
+use Smsc\Services\SmscMessage;
 
 // Create new settings item
-$settings = new Settings($MY_LOGIN, $MY_PASSWORD);
+$settings = new Settings([
+    'login' => $MY_LOGIN,
+    'psw'   => $MY_PASSWORD
+]);
 
 // Create new message
 $options = [
@@ -53,11 +56,14 @@ $response = $smsc->results();
 ```php
 <?php
 
-use \Smsc\Settings;
-use \Smsc\SmscMessage;
+use Smsc\Settings\Settings;
+use Smsc\Services\SmscBalance;
 
 // Create new settings item
-$settings = new Settings($MY_LOGIN, $MY_PASSWORD);
+$settings = new Settings([
+    'login' => $MY_LOGIN,
+    'psw'   => $MY_PASSWORD
+]);
 
 // Create new balance
 $balance = new SmscBalance($settings);
@@ -70,11 +76,14 @@ $balance->send();
 ```php
 <?php
 
-use \Smsc\Settings;
-use \Smsc\SmscSenders;
+use Smsc\Settings\Settings;
+use Smsc\Services\SmscSenders;
 
 // Create new settings item
-$settings = new Settings($MY_LOGIN, $MY_PASSWORD);
+$settings = new Settings([
+    'login' => $MY_LOGIN,
+    'psw'   => $MY_PASSWORD
+]);
 
 // Create new balance
 $senders = new SmscSenders($settings);
@@ -91,11 +100,11 @@ $arr = $senders->results();
 ```php
 <?php
 
-use \Smsc\Settings;
-use \Smsc\SmscMessage;
+use Smsc\Settings\Settings;
+use Smsc\Services\SmscMessage;
 
 // Create new settings item
-$settings = new Settings($MY_LOGIN, $MY_PASSWORD);
+$settings = new Settings([$MY_LOGIN, $MY_PASSWORD]);
 $sms = new SmscMessage($settings, $phones, $message, $options);
 
 // Send MMS
