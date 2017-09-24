@@ -391,7 +391,7 @@ final class Settings
      */
     public function mergeOptions(array $options)
     {
-        $this->options = $this->getOptions() + $options;
+        $this->options = array_merge($this->getOptions(), $options);
 
         return $this->options;
     }

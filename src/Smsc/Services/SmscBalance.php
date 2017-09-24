@@ -56,4 +56,30 @@ class SmscBalance extends AbstractSmscService
     {
         return $this->getData()->getResponse();
     }
+
+
+    /**
+     * Get balance amount.
+     *
+     * @return float
+     */
+    public function getAmount()
+    {
+        $results = $this->results();
+
+        return isset($results->balance) ? $results->balance : (float) 0;
+    }
+
+
+    /**
+     * Get balance currency.
+     *
+     * @return string
+     */
+    public function getCurrency()
+    {
+        $results = $this->results();
+
+        return isset($results->currency) ? $results->currency : '';
+    }
 }

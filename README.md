@@ -104,7 +104,10 @@ use Smsc\Settings\Settings;
 use Smsc\Services\SmscMessage;
 
 // Create new settings item
-$settings = new Settings([$MY_LOGIN, $MY_PASSWORD]);
+$settings = new Settings([
+    'login' => $MY_LOGIN,
+    'psw'   => $MY_PASSWORD
+]);
 $sms = new SmscMessage($settings, $phones, $message, $options);
 
 // Send MMS
