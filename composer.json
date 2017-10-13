@@ -2,6 +2,7 @@
   "name": "awd-studio/smsc",
   "description": "An API for sending messages with the https://smsc.ua / https://smsc.ru / https://smsc.kz / https://smsc.tj / https://smscentre.com services.",
   "type": "library",
+  "homepage": "https://github.com/awd-studio/smsc",
   "keywords": [
     "smsc",
     "sms",
@@ -14,6 +15,9 @@
       "email": "awd.com.ua@gmail.com"
     }
   ],
+  "support": {
+    "issues": "https://github.com/awd-studio/smsc/issues"
+  },
   "require": {
     "php": ">=5.5.9"
   },

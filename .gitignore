@@ -3,3 +3,6 @@
 
 # Ignore vendors
 /vendor
+
+# Ignore lock file
+/composer.lock

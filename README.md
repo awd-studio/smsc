@@ -1,3 +1,7 @@
+[![Latest Stable Version](https://poser.pugx.org/awd-studio/smsc/v/stable)](https://packagist.org/packages/awd-studio/smsc)
+[![Total Downloads](https://poser.pugx.org/awd-studio/smsc/downloads)](https://packagist.org/packages/awd-studio/smsc)
+[![License](https://poser.pugx.org/awd-studio/smsc/license)](https://packagist.org/packages/awd-studio/smsc)
+
 # SMSC
 
 ### Simple library for sending SMS and other messages
